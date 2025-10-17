@@ -1,6 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse, FileResponse
 from django.shortcuts import render
 
 
 def index(request):
-    return HttpResponse("wazzup")
+    return render(request, "index.html", {})
