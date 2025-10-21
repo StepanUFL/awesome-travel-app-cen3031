@@ -29,3 +29,9 @@
         console.log(locations);
         return locations;
     }
+    
+    // This overwrites the form's action attribute with the correct URL depending on the ID of the route.
+    function setRouteFormAction() {
+      routeId = "123abc";
+      document.getElementById("route-form").action = "/route/" + routeId;
+    }
