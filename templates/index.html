@@ -6,21 +6,40 @@
     <meta name='description' content='Software Engineering Class Project'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassWow</title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="../static/style.css" />
 </head>
    
-<body>
+<body onload="loadList()">
  <h1>Hello! Welcome to the Project</h1>
 
     <h2> Buttons
         <button type="button" onclick="newList()">
-            Create New List
+            Clear
+        </button>
+        <button type="button" onclick="saveList()">
+            Save Current List
         </button>
         <button type="button" onclick="returnList()">
-            Saved Lists
+            Return Saved List
         </button>
     </h2>
 
+ <div>
+    <button type="button" onclick="addToList(1)" id="1" value="Place1">
+        Add place 1
+    </button>
+     <button type="button" onclick="addToList(2)" id="2" value="Place2">
+        Add place 2
+    </button>
+     <button type="button" onclick="addToList(3)" id="3" value="Place3">
+        Add place 3
+    </button>
+     <button type="button" onclick="addToList(4)" id="4" value="Place4">
+        Add place 4
+    </button>
+ </div>
+
+ <!--
     <form action="">
         <label for="place1">Location 1</label>
         <input type="text" id="place1" name="place1"><br>
@@ -30,24 +49,12 @@
         <input type="text" id="place3" name="place3"><br>
         <input type="submit" value="Submit">
     </form>
+-->
+ <div id="test">
 
-    <p id="test">
+ </div>
 
-    </p>
-
-<script>
-    const locations = ["Place1", "Place2", "Place3"];
-
-    function newList() {
-        document.getElementById("test").innerHTML = "clicked";
-        console.log(locations);
-    }
-
-    function returnList() {
-        document.getElementById("test").innerHTML = locations;
-        console.log(locations);
-    }
-</script>
+<script src="../static/script.js"></script>
 
 
 </body>
