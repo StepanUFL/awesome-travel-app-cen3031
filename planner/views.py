@@ -21,37 +21,26 @@ def index(request: HttpRequest):
     return render(request, "index.html", {})
 
 
+# URL: /location/{id}
 # View that responds to GET requests for information about a location
-# URL: /location/
-# URL Parameters:
-#   id: The ID of the location
-def location_info(request: HttpRequest):
-    location_id = request.GET["id"]
-    return JsonResponse(locations[location_id])
+#
+# GET: Returns a JSON object containing information about the location
+def location(request: HttpRequest, id):
+    return JsonResponse(locations[id])
 
 
-# View that responds to POST requests to create a new route
-# URL: /new-route/
+# URL: /route/{id}
+# View that updates routes or returns route info
+#
+# GET: Returns a JSON object with the route with the given ID
+#
+# POST: Updates the route with the given ID, or creates a new one
 # Payload Parameters:
-#   route_id: The ID that the route should be created under
-#   locations_ids: A comma-separated list of location IDs
-def new_route(request: HttpRequest):
-    route_id = request.POST["route_id"]
+#   location_ids: A comma-separated list of location IDs (is there a better way?)
+def route(request: HttpRequest, id):
+    if request.method == "POST":
+        routes[id] = request.POST["location_ids"].split(sep=",")
+        return HttpResponseRedirect(reverse("index"))
 
-    location_ids = request.POST["location_ids"].split(sep=",")
-    route = []
-    for id in location_ids:
-        route.append(id)
-
-    routes[route_id] = route
-
-    return HttpResponseRedirect(reverse("index"))
-
-
-# View that responds to GET requests for information about a route
-# URL: /route/
-# URL Parameters:
-#   id: The ID of the route
-def route_info(request: HttpRequest):
-    route_id = request.GET["id"]
-    return JsonResponse(routes[route_id])
+    elif request.method == "GET":
+        return JsonResponse(routes[id], safe=False)
