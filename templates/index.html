@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- not live yet desc is useless lol -->
+    <meta name='description' content='Software Engineering Class Project'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassWow</title>
+    <link rel="stylesheet" href="static/style.css" />
+</head>
+   
+<body onload="loadList()">
+ <h1>Hello! Welcome to the Project</h1>
+
+    <h2> Buttons
+        <button type="button" onclick="newList()">
+            Clear
+        </button>
+        <button type="button" onclick="saveList()">
+            Save Current List
+        </button>
+        <button type="button" onclick="returnList()">
+            Return Saved List
+        </button>
+    </h2>
+
+ <div>
+    <button type="button" onclick="addToList(1)" id="1" value="Place1">
+        Add place 1
+    </button>
+     <button type="button" onclick="addToList(2)" id="2" value="Place2">
+        Add place 2
+    </button>
+     <button type="button" onclick="addToList(3)" id="3" value="Place3">
+        Add place 3
+    </button>
+     <button type="button" onclick="addToList(4)" id="4" value="Place4">
+        Add place 4
+    </button>
+ </div>
+
+
+ <!-- Change this! This is just here to show how to configure a form to work with the API. -->
+ <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
+ <button type="button" onclick="setRouteFormAction()">
+     Set RouteID
+ </button>
+ <form id="route-form" action="" method="post">
+     <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
+     {% csrf_token %}
+     
+     <!-- This populates the form parameter location_ids with a list of comma-seperated values.
+        In practice, the parameter will probably be generated with JS, unless there's a better way. -->
+     <input type="hidden" name="location_ids" value="america,brazil">
+     <input type="submit" value="Create sample route">
+ </form>
+ 
+ <!--
+    <form action="">
+        <label for="place1">Location 1</label>
+        <input type="text" id="place1" name="place1"><br>
+        <label for="place2">Location 2</label>
+        <input type="text" id="place2" name="place2"><br>
+        <label for="place3">Location 3</label>
+        <input type="text" id="place3" name="place3"><br>
+        <input type="submit" value="Submit">
+    </form>
+-->
+ <div id="test">
+
+ </div>
+
+<script src="static/script.js"></script>
+
+
+</body>
+</html>
