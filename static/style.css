@@ -3,3 +3,7 @@ body {
     color: white;
     background-color: #282c34;
 }
+
+* {
+    margin:5%;
+}
