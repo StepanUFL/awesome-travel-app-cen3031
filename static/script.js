@@ -41,7 +41,7 @@
             },
             body: JSON.stringify({ location_ids: currentIDs }),
         })
-        .then(response => response.json())
+        //.then(response => response.json())
         .then(data => {
             console.log('Server responded:', data);
             alert('Order saved successfully');
