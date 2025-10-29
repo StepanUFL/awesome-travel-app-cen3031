@@ -10,9 +10,11 @@
 </head>
    
 <body onload="renderList()">
- <h1>Hello! Welcome to the Project</h1>
 
-    <div>
+
+    <div id="debug">
+        <h1>Hello! Welcome to the Project</h1>
+
         <h2>JS Debug Buttons</h2>
         <button type="button" onclick="newList()">
             Clear
@@ -42,34 +44,36 @@
         <div id="test"></div>
         <div id="test2"></div>
 
+         <!-- Change this! This is just here to show how to configure a form to work with the API. -->
+         <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
+         <button type="button" id="saveListButton">
+             Send List to Backend
+         </button>
+         <form id="listForm" method="post">
+             <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
+             {% csrf_token %}
+
+             <!-- This populates the form parameter location_ids with a list of comma-seperated values.
+                In practice, the parameter will probably be generated with JS, unless there's a better way. -->
+             <input type="hidden" name="location_ids" id="location_ids" value="">
+         </form>
+
+
     </div>
 
 
 
 
- <!-- Change this! This is just here to show how to configure a form to work with the API. -->
- <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
- <button type="button" id="saveListButton">
-     Send List to Backend
- </button>
- <form id="listForm" method="post">
-     <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
-     {% csrf_token %}
-     
-     <!-- This populates the form parameter location_ids with a list of comma-seperated values.
-        In practice, the parameter will probably be generated with JS, unless there's a better way. -->
-     <input type="hidden" name="location_ids" id="location_ids" value="">
- </form>
-<div>
+
     <iframe
-      width="450"
-      height="250"
+      width="50%"
+      height="100%"
       frameborder="0" style="border:0"
       referrerpolicy="no-referrer-when-downgrade"
       src="https://www.google.com/maps/embed/v1/search?key=AIzaSyAadPJiTcw9Um4KWOnXRaqRozJlSrgz9gg&q=tourist+attractions+in+Gainesville"
-      allowfullscreen>
+      allowfullscreen
+    >
     </iframe>
-</div>
 
 
 
