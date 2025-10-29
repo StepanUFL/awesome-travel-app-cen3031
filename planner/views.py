@@ -2,19 +2,7 @@ import json
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-
-users = {}
-
-locations = {
-    "america": {
-        "display_name": "America",
-    },
-    "brazil": {
-        "display_name": "Brazil",
-    },
-}
-
-routes = {}
+from .models import Route
 
 
 # View for the index page
@@ -27,7 +15,7 @@ def index(request: HttpRequest):
 #
 # GET: Returns a JSON object containing information about the location
 def location(request: HttpRequest, id):
-    return JsonResponse(locations[id])
+    return JsonResponse({"nope": "nope"})
 
 
 # URL: /route/{id}
@@ -37,11 +25,14 @@ def location(request: HttpRequest, id):
 #
 # POST: Updates the route with the given ID, or creates a new one
 # Body should be JSON data with a list named "location_ids"
-def route(request: HttpRequest, id):
+def route(request: HttpRequest, id: int):
     if request.method == "POST":
-        routes_json = json.loads(request.body)
-        routes[id] = routes_json["location_ids"]
+        location_ids_json = json.loads(request.body)
+        new_route = Route(location_ids=location_ids_json)
+        new_route.pk = id
+        new_route.save()
         return HttpResponseRedirect(reverse("index"))
 
     elif request.method == "GET":
-        return JsonResponse(routes[id], safe=False)
+        return JsonResponse(Route.objects.get(pk=id).location_ids)
+        # return JsonResponse(routes[id], safe=False)
