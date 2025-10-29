@@ -1,9 +1,21 @@
+html {
+    height: 100%;
+}
+
 body {
     font-family: monoscape;
     color: white;
     background-color: #282c34;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
 }
 
-* {
-    margin:5%;
+#debug {
+    padding: 1%;
+    margin-right: 15%;
+    float: right;
+
 }
+
+/* Will try not to touch div elements due to ARIA Live being a thing */
