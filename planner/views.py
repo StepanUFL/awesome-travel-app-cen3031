@@ -1,3 +1,4 @@
+import json
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -35,11 +36,11 @@ def location(request: HttpRequest, id):
 # GET: Returns a JSON object with the route with the given ID
 #
 # POST: Updates the route with the given ID, or creates a new one
-# Payload Parameters:
-#   location_ids: A comma-separated list of location IDs (is there a better way?)
+# Body should be JSON data with a list named "location_ids"
 def route(request: HttpRequest, id):
     if request.method == "POST":
-        routes[id] = request.POST["location_ids"].split(sep=",")
+        routes_json = json.loads(request.body)
+        routes[id] = routes_json["location_ids"]
         return HttpResponseRedirect(reverse("index"))
 
     elif request.method == "GET":
