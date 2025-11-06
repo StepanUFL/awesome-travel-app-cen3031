@@ -4,19 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='SimpleUser',
+            name="SimpleUser",
             fields=[
-                ('userID', models.AutoField(primary_key=True, serialize=False)),
-                ('userName', models.CharField(max_length=150, unique=True)),
-                ('password', models.CharField(max_length=128)),
+                ("userID", models.AutoField(primary_key=True, serialize=False)),
+                ("userName", models.CharField(max_length=150, unique=True)),
+                ("password", models.CharField(max_length=128)),
             ],
         ),
     ]

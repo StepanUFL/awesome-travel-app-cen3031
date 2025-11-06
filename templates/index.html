@@ -6,13 +6,16 @@
     <meta name='description' content='Software Engineering Class Project'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassWow</title>
-    <link rel="stylesheet" href="../static/style.css" />
+    <link rel="stylesheet" href="static/style.css" />
 </head>
    
-<body onload="loadList()">
- <h1>Hello! Welcome to the Project</h1>
+<body onload="renderList()">
 
-    <h2> Buttons
+
+    <div id="debug">
+        <h1>Hello! Welcome to the Project</h1>
+
+        <h2>JS Debug Buttons</h2>
         <button type="button" onclick="newList()">
             Clear
         </button>
@@ -22,39 +25,60 @@
         <button type="button" onclick="returnList()">
             Return Saved List
         </button>
-    </h2>
+         <div>
+             <!-- This uses an ID system built into the HTML elements as the example. -->
+             <!-- In actual implementation, the place ID should be returned from some get function calling the Place API -->
+            <button type="button" onclick="addToList(this.id)" id="abc1" value="Place1">
+                Add place 1
+            </button>
+             <button type="button" onclick="addToList(this.id)" id="abc2" value="Place2">
+                Add place 2
+            </button>
+             <button type="button" onclick="addToList(this.id)" id="abc3" value="Place3">
+                Add place 3
+            </button>
+             <button type="button" onclick="addToList(this.id)" id="abc4" value="Place4">
+                Add place 4
+            </button>
+        </div>
+        <div id="test"></div>
+        <div id="test2"></div>
 
- <div>
-    <button type="button" onclick="addToList(1)" id="1" value="Place1">
-        Add place 1
-    </button>
-     <button type="button" onclick="addToList(2)" id="2" value="Place2">
-        Add place 2
-    </button>
-     <button type="button" onclick="addToList(3)" id="3" value="Place3">
-        Add place 3
-    </button>
-     <button type="button" onclick="addToList(4)" id="4" value="Place4">
-        Add place 4
-    </button>
- </div>
+         <!-- Change this! This is just here to show how to configure a form to work with the API. -->
+         <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
+         <button type="button" id="saveListButton">
+             Send List to Backend
+         </button>
+         <form id="listForm" method="post">
+             <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
+             {% csrf_token %}
 
- <!--
-    <form action="">
-        <label for="place1">Location 1</label>
-        <input type="text" id="place1" name="place1"><br>
-        <label for="place2">Location 2</label>
-        <input type="text" id="place2" name="place2"><br>
-        <label for="place3">Location 3</label>
-        <input type="text" id="place3" name="place3"><br>
-        <input type="submit" value="Submit">
-    </form>
--->
- <div id="test">
+             <!-- This populates the form parameter location_ids with a list of comma-seperated values.
+                In practice, the parameter will probably be generated with JS, unless there's a better way. -->
+             <input type="hidden" name="location_ids" id="location_ids" value="">
+         </form>
 
- </div>
 
-<script src="../static/script.js"></script>
+    </div>
+
+
+
+
+
+    <iframe
+      width="50%"
+      height="100%"
+      frameborder="0" style="border:0"
+      referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps/embed/v1/search?key=AIzaSyAadPJiTcw9Um4KWOnXRaqRozJlSrgz9gg&q=tourist+attractions+in+Gainesville"
+      allowfullscreen
+    >
+    </iframe>
+
+
+
+
+<script src="static/script.js"></script>
 
 
 </body>
