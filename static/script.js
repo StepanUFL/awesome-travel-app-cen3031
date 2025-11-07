@@ -28,7 +28,8 @@
     const csrftoken = getCookie('csrftoken');
 
     //url pathing is gonna be weird, maybe make a route encoding system?
-    const fetchRoute = '/route/' + 12345678 + '/';
+    // Update: ID is no longer needed when creating a route
+    const fetchRoute = '/route/';
 
     // Functionality of "Send List to Backend" button
     // TO-DO Tidy up file pathing and variable types between files
