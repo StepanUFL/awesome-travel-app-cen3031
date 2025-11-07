@@ -6,4 +6,4 @@ class Route(models.Model):
     location_ids = models.JSONField(null=True)
 
     def __str__(self):
-        return str(self.location_ids)
+        return f"Route {self.id}: {self.location_ids}"
