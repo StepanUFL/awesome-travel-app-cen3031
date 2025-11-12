@@ -44,7 +44,7 @@
         <div id="test"></div>
         <div id="test2"></div>
 
-         <!-- Change this! This is just here to show how to configure a form to work with the API. -->
+
          <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
          <button type="button" id="saveListButton">
              Send List to Backend
@@ -63,8 +63,22 @@
 
 
 
+    <div id="main-container" style="display:flex; height:100vh;">
 
+        <div id="map" style="flex:1;"></div>
+        <div id="place-details" style="width:400px; padding:20px; border-left:1px solid #ccc; overflow-y:auto;">
+            <h2 id="place-name">Click a marker to see details</h2>
+            <div id="place-photo"></div>
+            <p id="place-address"></p>
+            <p id="place-rating"></p>
+            <button id="add-to-list-btn" disabled>Add to List</button>
+        </div>
+    </div>
 
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAadPJiTcw9Um4KWOnXRaqRozJlSrgz9gg&libraries=places&callback=initMap"></script>
+    <script src="static/script.js"></script>
+
+    <!-- iframe does not allow for dynamic changes and updates
     <iframe
       width="50%"
       height="100%"
@@ -74,11 +88,11 @@
       allowfullscreen
     >
     </iframe>
+    -->
 
 
 
 
-<script src="static/script.js"></script>
 
 
 </body>
