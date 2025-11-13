@@ -1,21 +1,15 @@
 import json
+
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+
 from .models import Route
 
 
 # View for the index page
 def index(request: HttpRequest):
     return render(request, "index.html", {})
-
-
-# URL: /location/{id}
-# View that responds to GET requests for information about a location
-#
-# GET: Returns a JSON object containing information about the location
-def location(request: HttpRequest, id):
-    return JsonResponse({"nope": "nope"})
 
 
 # URL: /route/{id}
