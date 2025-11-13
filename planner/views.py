@@ -9,7 +9,8 @@ from .models import Route
 
 # View for the index page
 def index(request: HttpRequest):
-    return render(request, "index.html", {})
+    if request.method == "GET":
+        return render(request, "index.html", {})
 
 
 # URL: /route/{id}
@@ -35,9 +36,11 @@ def route_id(request: HttpRequest, id: int):
 # URL: /route/
 # POST: Creates a new route
 # Body should be JSON data with a list named "location_ids"
+# Returns JSON with the field "route_id" containing the id of the route
 def route(request: HttpRequest):
     if request.method == "POST":
         request_body = json.loads(request.body)
         new_route = Route(location_ids=request_body["location_ids"])
         new_route.save()
-        return HttpResponseRedirect(reverse("index"))
+        # return HttpResponseRedirect(reverse("index"))
+        return JsonResponse({"route_id": new_route.id})
