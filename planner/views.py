@@ -23,16 +23,27 @@ def location(request: HttpRequest, id):
 #
 # GET: Returns a JSON object with the route with the given ID
 #
-# POST: Updates the route with the given ID, or creates a new one
+# POST: Updates the route with the given ID
 # Body should be JSON data with a list named "location_ids"
-def route(request: HttpRequest, id: int):
+def route_id(request: HttpRequest, id: int):
     if request.method == "POST":
-        location_ids_json = json.loads(request.body)
-        new_route = Route(location_ids=location_ids_json)
-        new_route.pk = id
-        new_route.save()
+        route: Route = Route.objects.get(pk=id)
+        request_body = json.loads(request.body)
+        route.location_ids = request_body["location_ids"]
+        route.save()
         return HttpResponseRedirect(reverse("index"))
 
     elif request.method == "GET":
         return JsonResponse(Route.objects.get(pk=id).location_ids)
         # return JsonResponse(routes[id], safe=False)
+
+
+# URL: /route/
+# POST: Creates a new route
+# Body should be JSON data with a list named "location_ids"
+def route(request: HttpRequest):
+    if request.method == "POST":
+        request_body = json.loads(request.body)
+        new_route = Route(location_ids=request_body["location_ids"])
+        new_route.save()
+        return HttpResponseRedirect(reverse("index"))
