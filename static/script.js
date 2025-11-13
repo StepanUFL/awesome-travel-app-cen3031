@@ -24,7 +24,7 @@ window.initMap = function() {
         if (selectedPlaceId) {
             currentIDs.push(selectedPlaceId);
             renderList();
-            alert(`${selectedPlaceName} added to list`);
+            //alert(`${selectedPlaceName} added to list`);
         }
 
     });

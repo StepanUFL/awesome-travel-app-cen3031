@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Login</title>
+    <link rel="stylesheet" href="static/style.css" />
+</head>
+<body>
+    <div><h1>Login</h1>
+
+        <form>
+
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br>
+            <!--
+            {% csrf_token %}
+            {{ form }}
+            -->
+            <input type="submit" value="Submit" id="login">
+            <input type="reset" value="Reset">
+        </form>
+    </div>
+    <input type="button" value="Don't have an account?" onclick="location.href='{% url 'signin' %}'" />
+    <input type="button" value="Back to main page" onclick="location.href='{% url 'index' %}'" />
+    <script src="account/script.js"></script>
+
+
+</body>
+</html>

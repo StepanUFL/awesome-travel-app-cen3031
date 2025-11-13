@@ -10,6 +10,18 @@ def index(request: HttpRequest):
     return render(request, "index.html", {})
 
 
+def login(request: HttpRequest):
+    return render(request, "login.html")
+
+
+def signin(request: HttpRequest):
+    return render(request, "signin.html")
+
+
+def main(request: HttpRequest):
+    return render(request, "main.html")
+
+
 # URL: /location/{id}
 # View that responds to GET requests for information about a location
 #
