@@ -1,26 +1,32 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Make an Account</title>
-    <link rel="stylesheet" href="static/style.css" />
+  <meta charset="UTF-8">
+  <title>Make an Account</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
 </head>
 <body>
-    <div>
-        <h1>Account Creation Page</h1>
-        <form>
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username"><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password"><br>
-            <input type="submit" value="Submit" id="signin">
-            <input type="reset" value="Reset">
-        </form>
+  <div>
+    <h1>Account Creation Page</h1>
 
-        <input type="button" value="Login Page" onclick="location.href='{% url 'login' %}'" />
-        <input type="button" value="Back to main page" onclick="location.href='{% url 'index' %}'" />
-        <script src="account/script.js"></script>
+    {% if error %}
+      <p style="color:red">{{ error }}</p>
+    {% endif %}
 
-    </div>
+    <form method="post" action="{% url 'signin' %}">
+      {% csrf_token %}
+      <label for="username">Username:</label><br>
+      <input type="text" id="username" name="userName" required><br>
+
+      <label for="password">Password:</label><br>
+      <input type="password" id="password" name="password" required><br>
+
+      <input type="submit" value="Submit" id="signin">
+      <input type="reset" value="Reset">
+    </form>
+
+    <input type="button" value="Login Page" onclick="location.href='{% url 'login' %}'" />
+  </div>
 </body>
 </html>

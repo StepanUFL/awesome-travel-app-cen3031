@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div style="position:fixed; top:10px; right:10px; font-weight:600;">
+    {% if current_username %}{{ current_username }}{% endif %}
+  </div>
+
+  <h1>All Users</h1>
+
+  <!-- method of displaying all users taken from CHATGPT (its just a simple loop I probably should've figured this out on my own) -->
+  <ul>
+    {% for u in users %}
+      <li>{{ u.userName }}</li>
+    {% empty %}
+      <li>No users found.</li>
+    {% endfor %}
+  </ul>
+
+  <input type="button" value="Go to Main Page" onclick="location.href='{% url 'main' %}'">
+</body>
+</html>
