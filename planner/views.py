@@ -16,6 +16,11 @@ def login(request: HttpRequest):
         password = request.POST.get("password") or ""
         if not username or not password:
             return render(request, "login.html", {"error": "Username and password are required.", "userName": username})
+        
+        if username == "admin" and password == "password123":
+            request.session["is_admin"] = True
+            request.session["simple_user_name"] = "admin"
+            return HttpResponseRedirect(reverse("admin_users"))
 
         try:
             user = SimpleUser.objects.get(userName=username)
@@ -31,6 +36,14 @@ def login(request: HttpRequest):
             return render(request, "login.html", {"error": "Invalid username or password.", "userName": username})
 
     return render(request, "login.html")
+
+def admin_users(request: HttpRequest):
+    # Only allow the special admin session
+    if not request.session.get("is_admin"):
+        return HttpResponseRedirect(reverse("login"))
+    users = SimpleUser.objects.all().order_by("userName")
+    current_username = request.session.get("simple_user_name")
+    return render(request, "admin_users.html", {"users": users, "current_username": current_username})
 
 def signin(request: HttpRequest):
     if request.method == "POST":

@@ -18,4 +18,8 @@ body {
 
 }
 
+.welcome-title {
+  text-align: center;
+}
+
 /* Will try not to touch div elements due to ARIA Live being a thing */
