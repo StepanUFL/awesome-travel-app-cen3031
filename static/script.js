@@ -3,6 +3,7 @@ let service;
 let infowindow;
 let selectedPlaceId = null;
 let selectedPlaceName = null;
+window.markers = [];
 
 console.log("script.js loaded");
 window.initMap = function() {
@@ -12,14 +13,17 @@ window.initMap = function() {
         zoom: 14,
     });
 
+    initSearchBar(map);
+
     service = new google.maps.places.PlacesService(map);
     infowindow = new google.maps.InfoWindow();
 
+/*
     service.nearbySearch(
         { location: { lat: 29.6516, lng: -82.3248 }, radius: 2000, type: "tourist_attraction" },
         displayPlaces
     );
-
+*/
     document.getElementById("add-to-list-btn").addEventListener("click", () => {
         if (selectedPlaceId) {
             currentIDs.push(selectedPlaceId);
@@ -29,6 +33,108 @@ window.initMap = function() {
 
     });
 
+}
+
+// Initialize the search bar functionality
+function initSearchBar(map) {
+    const input = document.getElementById("search-bar");
+    const autocomplete = new google.maps.places.Autocomplete(input);
+
+    // Bind the autocomplete to the map's bounds
+    autocomplete.bindTo("bounds", map);
+
+    // Add a listener for when a place is selected
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+
+        if (!place.geometry || !place.geometry.location) {
+            // If no specific place is found, perform a text search
+            performTextSearch(input.value, map);
+            return;
+        }
+
+        // Update the map's center and zoom level
+        map.setCenter(place.geometry.location);
+        map.setZoom(15);
+
+        // Optionally, add a marker at the selected location
+        new google.maps.Marker({
+            map: map,
+            position: place.geometry.location,
+            title: place.name,
+        });
+
+        // Update the page with the place details
+        updatePlaceDetails(place);
+    });
+}
+
+// Perform a text search for vague queries
+function performTextSearch(query, map) {
+    const service = new google.maps.places.PlacesService(map);
+
+    service.textSearch({ query, bounds: map.getBounds() }, (results, status) => {
+        if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
+            alert("No results found for the search query.");
+            return;
+        }
+
+        // Clear existing markers
+        clearMarkers();
+
+        // Add markers for each result
+        results.forEach(place => {
+            if (!place.geometry || !place.geometry.location) return;
+
+            const marker = addMarker(map, place.geometry.location, place.name);
+
+            marker.addListener("click", () => {
+                // Update the page with the place details
+                updatePlaceDetails(place);
+            });
+        });
+
+        // Center the map on the first result
+        map.setCenter(results[0].geometry.location);
+        map.setZoom(13);
+    });
+}
+
+// Add a marker and store it in the global array
+function addMarker(map, position, title) {
+    const marker = new google.maps.Marker({
+        map,
+        position,
+        title,
+    });
+    window.markers.push(marker); // Add the marker to the global array
+    return marker;
+}
+
+// Clear existing markers from the map
+function clearMarkers() {
+    window.markers.forEach(marker => marker.setMap(null)); // Remove each marker from the map
+    window.markers = []; // Reset the markers array
+}
+
+// Update the page with the place details
+function updatePlaceDetails(place) {
+    document.getElementById("place-name").textContent = place.name || "N/A";
+    document.getElementById("place-address").textContent = place.formatted_address || "N/A";
+    document.getElementById("place-rating").textContent = place.rating ? `Rating: ${place.rating}` : "No rating available";
+
+    const photoDiv = document.getElementById("place-photo");
+    if (place.photos && place.photos.length > 0) {
+        const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
+        photoDiv.innerHTML = `<img src="${photoUrl}" alt="${place.name}" style="width:100%; border-radius:8px;">`;
+    } else {
+        photoDiv.innerHTML = `<p>No photo available</p>`;
+    }
+
+    // Enable the "Add to List" button
+    document.getElementById("add-to-list-btn").disabled = false;
+    selectedPlaceId = place.place_id;
+    selectedPlaceName = place.name;
 }
 
 function displayPlaces(results, status) {
