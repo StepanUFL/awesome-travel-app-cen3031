@@ -1,31 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>User Login</title>
-    <link rel="stylesheet" href="static/style.css" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
 </head>
 <body>
-    <div><h1>Login</h1>
+    <div>
+        <h1>Login</h1>
 
-        <form>
+        {% if error %}
+          <p style="color:red">{{ error }}</p>
+        {% endif %}
 
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username"><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password"><br>
-            <!--
+        <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
-            {{ form }}
-            -->
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="userName" value="{{ userName|default:'' }}" required><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+
             <input type="submit" value="Submit" id="login">
             <input type="reset" value="Reset">
         </form>
     </div>
-    <input type="button" value="Don't have an account?" onclick="location.href='{% url 'signin' %}'" />
-    <input type="button" value="Back to main page" onclick="location.href='{% url 'index' %}'" />
-    <script src="account/script.js"></script>
 
+    <input type="button" value="Don’t have an account?" onclick="location.href='{% url 'signin' %}'" />
 
 </body>
 </html>
