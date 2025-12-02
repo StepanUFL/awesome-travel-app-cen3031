@@ -35,6 +35,41 @@ window.initMap = function() {
 
 }
 
+const optimizeUrl = "/optimize-route/";
+
+function optimizeCurrentRoute() {
+  if (currentIDs.length < 2) {
+    document.getElementById("optimal-route").innerText = "Add at least two places to optimize.";
+    return;
+  }
+  fetch(optimizeUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify({ place_ids: currentIDs }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+      // display names in order
+      document.getElementById("optimal-route").innerText =
+        `${data.route_names.join(" -> ")} (total: ${Math.round(data.distance_meters / 1000)} km)`;
+
+      // update currentID?
+      currentIDs = data.route_ids;
+      renderList();
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Failed to optimize route");
+    });
+}
+
 // Initialize the search bar functionality
 function initSearchBar(map) {
     const input = document.getElementById("search-bar");
@@ -305,9 +340,10 @@ function saveList(userid) {
 }
 
 function returnList() {
-    currentIDs = saved;
-    renderList();
-    return currentIDs;
+  currentIDs = saved;
+  renderList();
+  optimizeCurrentRoute(); // compute and show the optimal route
+  return currentIDs;
 }
 
 // UNUSED AS OF NOW
