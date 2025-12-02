@@ -3,6 +3,7 @@ let service;
 let infowindow;
 let selectedPlaceId = null;
 let selectedPlaceName = null;
+let idToName = Object.create(null);
 window.markers = [];
 
 console.log("script.js loaded");
@@ -49,13 +50,12 @@ window.initMap = function() {
     );
 */
     document.getElementById("add-to-list-btn").addEventListener("click", () => {
-        if (selectedPlaceId) {
-            currentIDs.push(selectedPlaceId);
-            renderList();
-            //alert(`${selectedPlaceName} added to list`);
-        }
-
-    });
+    if (selectedPlaceId) {
+        idToName[selectedPlaceId] = selectedPlaceName || selectedPlaceId;
+        if (!currentIDs.includes(selectedPlaceId)) currentIDs.push(selectedPlaceId);
+        renderList();
+  }
+});
 
 }
 
@@ -253,15 +253,16 @@ function getPlaceDetails(placeId) {
 }
 
 function addPlaceToList(placeId, placeName, btn) {
-    if (!currentIDs.includes(placeId)) {
-        currentIDs.push(placeId);
-        btn.textContent = "Saved";
-        btn.disabled = true;
-        renderList();
-    }
-    console.log("Current IDs:", currentIDs);
-    selectedPlaceId = null;
-    selectedPlaceName = null;
+  if (!currentIDs.includes(placeId)) {
+    idToName[placeId] = placeName || placeId;
+    currentIDs.push(placeId);
+    btn.textContent = "Saved";
+    btn.disabled = true;
+    renderList();
+  }
+  console.log("Current IDs:", currentIDs);
+  selectedPlaceId = null;
+  selectedPlaceName = null;
 }
 
 function displayPlaces(results, status) {
@@ -337,23 +338,24 @@ function getLocations() {
 }
 
 function renderList() {
-    //pls work
-  // bug where its shifting everything to the right, try going down in container
-  const html = currentIDs.map(id => `<div class="route-id">${id}</div>`).join("");
-  document.getElementById("test").innerHTML = html;
-
+  const container = document.getElementById("test");
+  container.innerHTML = "";
+  currentIDs.forEach(id => {
+    const div = document.createElement("div");
+    div.className = "route-id";
+    div.textContent = idToName[id] || id;  // show human name if we have it
+    container.appendChild(div);
+  });
   document.getElementById("location_ids").value = currentIDs.join(",");
-}
-function newList() {
-    document.getElementById("test").innerHTML = "List is currently empty";
-    document.getElementById("test2").innerHTML = "List is currently empty";
-    currentIDs = [];
 }
 
 function addToList(loc) {
-    place = document.getElementById(loc).id;
-    currentIDs.push(place);
-    renderList();
+  const el = document.getElementById(loc);
+  const placeId = el.id;
+  const name = el.value || placeId;
+  idToName[placeId] = name;
+  if (!currentIDs.includes(placeId)) currentIDs.push(placeId);
+  renderList();
 }
 
 function saveList(userid) {
@@ -361,11 +363,19 @@ function saveList(userid) {
     // send an HTTP request here?
 }
 
+// ended up removing the button, remove this function later?
 function returnList() {
   currentIDs = saved;
   renderList();
-  optimizeCurrentRoute(); // compute and show the optimal route
+  optimizeCurrentRoute();
   return currentIDs;
+}
+
+function newList() {
+  document.getElementById("test").innerHTML = "List is currently empty";
+  document.getElementById("test2").innerHTML = "List is currently empty";
+  currentIDs = [];
+  idToName = Object.create(null);
 }
 
 // UNUSED AS OF NOW
