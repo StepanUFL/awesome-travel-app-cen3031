@@ -357,8 +357,8 @@ function addToList(loc) {
 }
 
 function saveList(userid) {
-    saved = currentIDs;
-    // send an HTTP request here?
+  saved = currentIDs.slice();  // decouple from currentIDs
+  console.log("Saved list:", saved);
 }
 
 // ended up removing the button, remove this function later?
@@ -369,11 +369,19 @@ function returnList() {
   return currentIDs;
 }
 
+// clear wasn't working before, need to compltely reset variables
 function newList() {
-  document.getElementById("test").innerHTML = "List is currently empty";
-  document.getElementById("test2").innerHTML = "List is currently empty";
-  currentIDs = [];
-  idToName = Object.create(null);
+  document.getElementById("test").textContent = "List is currently empty";
+  document.getElementById("optimal-route").textContent = "";
+  document.getElementById("location_ids").value = "";
+
+  currentIDs.length = 0;              
+  saved.length = 0;                  
+  idToName = Object.create(null);    
+  selectedPlaceId = null;
+  selectedPlaceName = null;
+
+  console.log("Cleared. currentIDs:", currentIDs, "saved:", saved);
 }
 
 // UNUSED AS OF NOW
