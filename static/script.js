@@ -13,6 +13,30 @@ window.initMap = function() {
         zoom: 14,
     });
 
+    map.addListener("click", (event) => {
+    // Check if the clicked object is a POI
+    if (event.placeId) {
+        // Prevent the default InfoWindow from showing
+
+        console.log("POI clicked with Place ID:", event.placeId);
+        event.stop();
+
+        // Fetch place details using the placeId
+        const request = {
+            placeId: event.placeId,
+            fields: ["name", "formatted_address", "photos", "rating", "geometry", "types"],
+        };
+
+        service.getDetails(request, (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                // Update the page with the place details
+                selectedPlaceId = event.placeId;
+                updatePlaceDetails(place);
+            }
+        });
+    }
+    });
+
     initSearchBar(map);
 
     service = new google.maps.places.PlacesService(map);
@@ -63,6 +87,7 @@ function optimizeCurrentRoute() {
 
 // Hook the “Calculate shortest route!” button to the optimizer
 document.getElementById("saveListButton").addEventListener("click", optimizeCurrentRoute);
+
 
 // Initialize the search bar functionality
 function initSearchBar(map) {
@@ -119,6 +144,7 @@ function performTextSearch(query, map) {
 
             marker.addListener("click", () => {
                 // Update the page with the place details
+                selectedPlaceId = place.place_id;
                 updatePlaceDetails(place);
             });
         });
@@ -148,9 +174,10 @@ function clearMarkers() {
 
 // Update the page with the place details
 function updatePlaceDetails(place) {
+    console.log("Updating place details for:", place);
     document.getElementById("place-name").textContent = place.name || "N/A";
     document.getElementById("place-address").textContent = place.formatted_address || "N/A";
-    document.getElementById("place-rating").textContent = place.rating ? `Rating: ${place.rating}` : "No rating available";
+    document.getElementById("place-rating").textContent = place.rating ? `Rating: ${place.rating} / 5 Stars` : "No rating available";
 
     const photoDiv = document.getElementById("place-photo");
     if (place.photos && place.photos.length > 0) {
@@ -160,46 +187,29 @@ function updatePlaceDetails(place) {
         photoDiv.innerHTML = `<p>No photo available</p>`;
     }
 
+
+    // Add a "View on Google Maps" link
+    const googleMapsLink = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
+    const viewOnMaps = `<a href="${googleMapsLink}" target="_blank" style="color:blue; text-decoration:underline;">View on Google Maps</a>`;
+    document.getElementById("place-address").innerHTML += `<br>${viewOnMaps}`;
+
+    // Add a short summary if available
+    const summary = place.types ? `Tags: ${place.types.join(", ").replace(/_/g, " ")}` : "No tags associated";
+    document.getElementById("place-summary").textContent = summary;
+
     // Enable the "Add to List" button
     document.getElementById("add-to-list-btn").disabled = false;
-    selectedPlaceId = place.place_id;
+    if (selectedPlaceId == null) {
+        selectedPlaceId = place.place_id;
+    }
+
+    console.log("Selected Place ID:", selectedPlaceId);
     selectedPlaceName = place.name;
 }
 
-function displayPlaces(results, status) {
-    if (status !== google.maps.places.PlacesServiceStatus.OK) return;
-
-    results.forEach(place =>
-        {
-            if (!place.geometry || !place.geometry.location) return;
-
-            const marker = new google.maps.Marker({
-                map,
-                position: place.geometry.location,
-                title: place.name,
-            });
-
-            marker.addListener("click", () =>
-                {
-                    /*
-                    infowindow.setContent(`
-                        <div>
-                            <strong>${place.name}</strong><br>
-                            <button onclick="addPlaceToList('${place.place_id}', '${place.name}', this)">
-                                Add to List
-                            </button>
-                        </div>
-                    `);
-                    infowindow.open(map, marker);
-                    */
-                    getPlaceDetails(place.place_id);
-                }
-            );
-        }
-    );
-}
 
 function getPlaceDetails(placeId) {
+    console.log("Fetching details for Place ID:", placeId);
     const request = {
         placeId,
         fields: ["name", "formatted_address", "photos", "rating", "place_id", "geometry"]
@@ -208,7 +218,10 @@ function getPlaceDetails(placeId) {
     service.getDetails(request, (place, status) =>
         {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
+
                 selectedPlaceId = place.place_id;
+
+
                 selectedPlaceName = place.name;
 
                 console.log("Place details: ", place);
@@ -228,11 +241,11 @@ function getPlaceDetails(placeId) {
                     photoDiv.innerHTML = `<p>No photo available</p>`;
                 }
 
-                /*
+
                 infowindow.setContent(`<div><strong>${place.name}</strong><br>${place.formatted_address}</div>`);
                 infowindow.setPosition(place.geometry.location);
                 infowindow.open(map);
-                */
+
             }
 
         }
@@ -247,6 +260,25 @@ function addPlaceToList(placeId, placeName, btn) {
         renderList();
     }
     console.log("Current IDs:", currentIDs);
+    selectedPlaceId = null;
+    selectedPlaceName = null;
+}
+
+function displayPlaces(results, status) {
+    if (status !== google.maps.places.PlacesServiceStatus.OK) return;
+
+    results.forEach(place =>
+        {
+            if (!place.geometry || !place.geometry.location) return;
+
+            const marker = new google.maps.Marker({
+                map,
+                position: place.geometry.location,
+                title: place.name,
+            });
+
+        }
+    );
 }
 
 
@@ -272,7 +304,8 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 
 //url pathing is gonna be weird, maybe make a route encoding system?
-const fetchRoute = '/route/' + 12345678 + '/';
+// Update: ID is no longer needed to create a route
+const fetchRoute = '/route/';
 
 // Functionality of "Send List to Backend" button
 // TO-DO Tidy up file pathing and variable types between files
