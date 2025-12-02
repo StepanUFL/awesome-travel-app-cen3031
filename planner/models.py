@@ -17,3 +17,14 @@ class Route(models.Model):
 
     def __str__(self):
         return str(self.location_ids)
+    
+class UserRoute(models.Model):
+    user = models.ForeignKey(SimpleUser, on_delete=models.CASCADE)
+    input_ids = models.JSONField()
+    route_ids = models.JSONField()
+    route_names = models.JSONField()
+    distance_meters = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.userName}: {' -> '.join(self.route_names)}"

@@ -1,4 +1,6 @@
 # new version of distance.py that uses the place IDs from the user instead of earlier terminal version (I miss when life was simpler)
+#refactored by chatgpt
+
 import itertools
 from googlemaps import Client
 

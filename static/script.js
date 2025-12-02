@@ -52,23 +52,17 @@ function optimizeCurrentRoute() {
   })
     .then((res) => res.json())
     .then((data) => {
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-      // display names in order
+      if (data.error) { alert(data.error); return; }
       document.getElementById("optimal-route").innerText =
         `${data.route_names.join(" -> ")} (total: ${Math.round(data.distance_meters / 1000)} km)`;
-
-      // update currentID?
-      currentIDs = data.route_ids;
+      currentIDs = data.route_ids;  // reflect optimized order
       renderList();
     })
-    .catch((err) => {
-      console.error(err);
-      alert("Failed to optimize route");
-    });
+    .catch((err) => { console.error(err); alert("Failed to optimize route"); });
 }
+
+// Hook the “Calculate shortest route!” button to the optimizer
+document.getElementById("saveListButton").addEventListener("click", optimizeCurrentRoute);
 
 // Initialize the search bar functionality
 function initSearchBar(map) {
@@ -255,14 +249,7 @@ function addPlaceToList(placeId, placeName, btn) {
     console.log("Current IDs:", currentIDs);
 }
 
-// Dummy data that mimics an accessible list of many locations
-// TO-DO Make a function to call the Place API to get location data based on ID
-locations = [
-    { id: "abc1", name: "Place1" },
-    { id: "abc2", name: "Place2" },
-    { id: "abc3", name: "Place3" },
-    { id: "abc4", name: "Place4" }
-];
+
 
 currentIDs = [];
 saved = [];
@@ -318,7 +305,7 @@ function getLocations() {
 
 function renderList() {
     document.getElementById("test").innerHTML = currentIDs;
-    document.getElementById("test2").innerHTML = getLocations();
+
     document.getElementById("location_ids").value = currentIDs;
 }
 
