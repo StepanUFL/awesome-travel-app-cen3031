@@ -2,98 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- not live yet desc is useless lol -->
-    <meta name='description' content='Software Engineering Class Project'>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassWow</title>
+    <title>TourBus</title>
     <link rel="stylesheet" href="static/style.css" />
 </head>
-   
-<body onload="renderList()">
+<body>
+    <div>
+        <h1 class="welcome-title">Welcome!</h1>
 
-
-    <div id="debug">
-        <h1>Hello! Welcome to the Project</h1>
-
-        <h2>JS Debug Buttons</h2>
-        <button type="button" onclick="newList()">
-            Clear
-        </button>
-        <button type="button" onclick="saveList()">
-            Save Current List
-        </button>
-        <button type="button" onclick="returnList()">
-            Return Saved List
-        </button>
-         <div>
-             <!-- This uses an ID system built into the HTML elements as the example. -->
-             <!-- In actual implementation, the place ID should be returned from some get function calling the Place API -->
-            <button type="button" onclick="addToList(this.id)" id="abc1" value="Place1">
-                Add place 1
-            </button>
-             <button type="button" onclick="addToList(this.id)" id="abc2" value="Place2">
-                Add place 2
-            </button>
-             <button type="button" onclick="addToList(this.id)" id="abc3" value="Place3">
-                Add place 3
-            </button>
-             <button type="button" onclick="addToList(this.id)" id="abc4" value="Place4">
-                Add place 4
-            </button>
-        </div>
-        <div id="test"></div>
-        <div id="test2"></div>
-
-
-         <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
-         <button type="button" id="saveListButton">
-             Send List to Backend
-         </button>
-         <form id="listForm" method="post">
-             <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
-             {% csrf_token %}
-
-             <!-- This populates the form parameter location_ids with a list of comma-seperated values.
-                In practice, the parameter will probably be generated with JS, unless there's a better way. -->
-             <input type="hidden" name="location_ids" id="location_ids" value="">
-         </form>
-
+        <input type="button" value="User Login" onclick="location.href='{% url 'login' %}'" />
+        <input type="button" value="Don't have an account?" onclick="location.href='{% url 'signin' %}'" />
 
     </div>
-
-
-
-    <div id="main-container" style="display:flex; height:100vh;">
-
-        <div id="map" style="flex:1;"></div>
-        <div id="place-details" style="width:400px; padding:20px; border-left:1px solid #ccc; overflow-y:auto;">
-            <h2 id="place-name">Click a marker to see details</h2>
-            <div id="place-photo"></div>
-            <p id="place-address"></p>
-            <p id="place-rating"></p>
-            <button id="add-to-list-btn" disabled>Add to List</button>
-        </div>
-    </div>
-
-    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAadPJiTcw9Um4KWOnXRaqRozJlSrgz9gg&libraries=places&callback=initMap"></script>
-    <script src="static/script.js"></script>
-
-    <!-- iframe does not allow for dynamic changes and updates
-    <iframe
-      width="50%"
-      height="100%"
-      frameborder="0" style="border:0"
-      referrerpolicy="no-referrer-when-downgrade"
-      src="https://www.google.com/maps/embed/v1/search?key=AIzaSyAadPJiTcw9Um4KWOnXRaqRozJlSrgz9gg&q=tourist+attractions+in+Gainesville"
-      allowfullscreen
-    >
-    </iframe>
-    -->
-
-
-
-
-
-
 </body>
 </html>
