@@ -1,4 +1,6 @@
 from django.urls import path
+from django.urls import include, path
+
 from . import views
 
 
@@ -10,4 +12,7 @@ urlpatterns = [
     path("location/<id>/", views.location, name="location"),
     path("route/<int:id>/", views.route, name="route"),
     path("admin-users", views.admin_users, name="admin_users"),
+]
+    path("route/", views.route, name="route"),
+    path("route/<int:id>/", views.route_id, name="route_id"),
 ]
