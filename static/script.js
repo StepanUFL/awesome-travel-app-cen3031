@@ -337,11 +337,13 @@ function getLocations() {
 }
 
 function renderList() {
-    document.getElementById("test").innerHTML = currentIDs;
+    //pls work
+  // bug where its shifting everything to the right, try going down in container
+  const html = currentIDs.map(id => `<div class="route-id">${id}</div>`).join("");
+  document.getElementById("test").innerHTML = html;
 
-    document.getElementById("location_ids").value = currentIDs;
+  document.getElementById("location_ids").value = currentIDs.join(",");
 }
-
 function newList() {
     document.getElementById("test").innerHTML = "List is currently empty";
     document.getElementById("test2").innerHTML = "List is currently empty";

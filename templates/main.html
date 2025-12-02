@@ -5,7 +5,7 @@
     <!-- not live yet desc is useless lol -->
     <meta name='description' content='Software Engineering Class Project'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassWow</title>
+    <title>TourBus</title>
     <link rel="stylesheet" href="static/style.css" />
 </head>
    
@@ -23,41 +23,27 @@
 
 
 
-    <div id="debug">
-        <h1>Hello! Welcome to TourBus!</h1>
+ <!-- i hate html (or maybe just programming in general) -->
+<div id="debug" style="position:relative; float:right; width:400px; box-sizing:border-box; overflow-wrap:anywhere; word-break:break-word;">
+  
+    <h1>Hello! Welcome to TourBus!</h1>
 
-        <input type="button" value="Logout" onclick="location.href='{% url 'login' %}'" />
+    <input type="button" value="Logout" onclick="location.href='{% url 'login' %}'" />
 
-        <button type="button" onclick="newList()">
-            Clear
-        </button>
-        <button type="button" onclick="saveList()">
-            Save Current List
-        </button>
-        <button type="button" onclick="returnList()">
-            Display route
-        </button>
+    <button type="button" onclick="newList()">Clear</button>
+    <button type="button" onclick="saveList()">Save Current List</button>
 
-        <div id="test"></div>
+    <!-- need to make places up and down not go to the right -->
+    <div id="test" style="white-space:normal; overflow-wrap:anywhere; word-break:break-word;"></div>
 
-        <div id="optimal-route" style="margin-top:8px;"></div>
+    <div id="optimal-route" style="margin-top:8px;"></div>
 
-
-         <!-- This button calls a function which overwrites the form's action. This would allow something like a text input to be used to choose the form's ID. -->
-         <button type="button" id="saveListButton">
-             Calculate shortest route!
-         </button>
-         <form id="listForm" method="post">
-             <!-- This is a Django template tag which is used for security purposes. It is required in every form. -->
-             {% csrf_token %}
-
-             <!-- This populates the form parameter location_ids with a list of comma-seperated values.
-                In practice, the parameter will probably be generated with JS, unless there's a better way. -->
-             <input type="hidden" name="location_ids" id="location_ids" value="">
-         </form>
-
-
-    </div>
+    <button type="button" id="saveListButton">Calculate shortest route!</button>
+    <form id="listForm" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="location_ids" id="location_ids" value="">
+    </form>
+</div>
 
 
 
