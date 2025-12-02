@@ -36,6 +36,14 @@ body {
 
 }
 
+/* not all names are visible? */
+.admin-page {
+  overflow-y: auto; 
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100vh;
+}
+
 .trip-list { 
     max-height: 30vh;
     overflow-y: auto;
