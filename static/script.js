@@ -89,38 +89,38 @@ function optimizeCurrentRoute() {
 document.getElementById("saveListButton").addEventListener("click", optimizeCurrentRoute);
 
 
-// Initialize the search bar functionality
+
 function initSearchBar(map) {
-    const input = document.getElementById("search-bar");
-    const autocomplete = new google.maps.places.Autocomplete(input);
+  const input = document.getElementById("search-bar");
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    fields: ["place_id", "name", "geometry", "formatted_address", "photos", "rating", "types"],
+  });
+  autocomplete.bindTo("bounds", map);
 
-    // Bind the autocomplete to the map's bounds
-    autocomplete.bindTo("bounds", map);
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry || !place.geometry.location) {
+      performTextSearch(input.value, map);
+      return;
+    }
 
-    // Add a listener for when a place is selected
-    autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
+    // Set the current selection from Autocomplete
+    if (place.place_id) {
+      selectedPlaceId = place.place_id;
+      selectedPlaceName = place.name || place.place_id;
+    }
 
-        if (!place.geometry || !place.geometry.location) {
-            // If no specific place is found, perform a text search
-            performTextSearch(input.value, map);
-            return;
-        }
+    map.setCenter(place.geometry.location);
+    map.setZoom(15);
 
-        // Update the map's center and zoom level
-        map.setCenter(place.geometry.location);
-        map.setZoom(15);
-
-        // Optionally, add a marker at the selected location
-        new google.maps.Marker({
-            map: map,
-            position: place.geometry.location,
-            title: place.name,
-        });
-
-        // Update the page with the place details
-        updatePlaceDetails(place);
+    new google.maps.Marker({
+      map,
+      position: place.geometry.location,
+      title: place.name,
     });
+
+    updatePlaceDetails(place);
+  });
 }
 
 // Perform a text search for vague queries
@@ -172,39 +172,37 @@ function clearMarkers() {
     window.markers = []; // Reset the markers array
 }
 
-// Update the page with the place details
+// bug with the search bar replacing previous locations?
 function updatePlaceDetails(place) {
-    console.log("Updating place details for:", place);
-    document.getElementById("place-name").textContent = place.name || "N/A";
-    document.getElementById("place-address").textContent = place.formatted_address || "N/A";
-    document.getElementById("place-rating").textContent = place.rating ? `Rating: ${place.rating} / 5 Stars` : "No rating available";
+  console.log("Updating place details for:", place);
 
-    const photoDiv = document.getElementById("place-photo");
-    if (place.photos && place.photos.length > 0) {
-        const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
-        photoDiv.innerHTML = `<img src="${photoUrl}" alt="${place.name}" style="width:100%; border-radius:8px;">`;
-    } else {
-        photoDiv.innerHTML = `<p>No photo available</p>`;
-    }
+  // always set selection, was a bug with mixing clicks and searches
+  if (place.place_id) {
+    selectedPlaceId = place.place_id;
+  }
+  selectedPlaceName = place.name || selectedPlaceId;
 
+  document.getElementById("place-name").textContent = place.name || "N/A";
+  document.getElementById("place-address").textContent = place.formatted_address || "N/A";
+  document.getElementById("place-rating").textContent = place.rating ? `Rating: ${place.rating} / 5 Stars` : "No rating available";
 
-    // Add a "View on Google Maps" link
-    const googleMapsLink = `https://www.google.com/maps/place/?q=place_id:${place.place_id}`;
-    const viewOnMaps = `<a href="${googleMapsLink}" target="_blank" style="color:blue; text-decoration:underline;">View on Google Maps</a>`;
-    document.getElementById("place-address").innerHTML += `<br>${viewOnMaps}`;
+  const photoDiv = document.getElementById("place-photo");
+  if (place.photos && place.photos.length > 0) {
+    const photoUrl = place.photos[0].getUrl({ maxWidth: 400 });
+    photoDiv.innerHTML = `<img src="${photoUrl}" alt="${place.name}" style="width:100%; border-radius:8px;">`;
+  } else {
+    photoDiv.innerHTML = `<p>No photo available</p>`;
+  }
 
-    // Add a short summary if available
-    const summary = place.types ? `Tags: ${place.types.join(", ").replace(/_/g, " ")}` : "No tags associated";
-    document.getElementById("place-summary").textContent = summary;
+  const googleMapsLink = place.place_id ? `https://www.google.com/maps/place/?q=place_id:${place.place_id}` : null;
+  document.getElementById("place-address").innerHTML += googleMapsLink
+    ? `<br><a href="${googleMapsLink}" target="_blank" style="color:blue; text-decoration:underline;">View on Google Maps</a>`
+    : "";
 
-    // Enable the "Add to List" button
-    document.getElementById("add-to-list-btn").disabled = false;
-    if (selectedPlaceId == null) {
-        selectedPlaceId = place.place_id;
-    }
+  const summary = place.types ? `Tags: ${place.types.join(", ").replace(/_/g, " ")}` : "No tags associated";
+  document.getElementById("place-summary").textContent = summary;
 
-    console.log("Selected Place ID:", selectedPlaceId);
-    selectedPlaceName = place.name;
+  document.getElementById("add-to-list-btn").disabled = false;
 }
 
 
