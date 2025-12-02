@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User info</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <div style="position:fixed; top:10px; right:10px; font-weight:600;">
+    {% if current_username %}{{ current_username }}{% endif %}
+  </div>
+
+  <h1>User info</h1>
+
+  <h3>Past trips:</h3>
+  <div class="admin-list">
+    <ul class="admin-users">
+      {% for t in trips %}
+        <li>
+          {{ t.route_names|join:" -> " }}
+          <span style="opacity:.7;">• {{ t.created_at|date:"Y-m-d H:i" }} • {{ t.distance_meters|floatformat:0 }} m</span>
+        </li>
+      {% empty %}
+        <li>No trips yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <input type="button" value="Go to Main Page" onclick="location.href='{% url 'main' %}'">
+</body>
+</html>

@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import IntegrityError
 from django.contrib.auth.hashers import check_password
-from .models import Route, SimpleUser
+from .models import Route, SimpleUser, UserRoute
+from django.conf import settings
+from .utils.distance import optimal_route
 
 
 # View for the index page
@@ -69,6 +71,52 @@ def main(request: HttpRequest):
     current_username = request.session.get("simple_user_name")
     return render(request, "main.html", {"current_username": current_username})
 
+
+
+def optimize_route(request: HttpRequest):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=405)
+    try:
+        data = json.loads(request.body)
+        place_ids = data.get("place_ids") or data.get("location_ids") or []
+    except Exception:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    if len(place_ids) < 2:
+        return JsonResponse({"error": "Add at least two locations"}, status=400)
+    if not getattr(settings, "GOOGLE_MAPS_API_KEY", ""):
+        return JsonResponse({"error": "Google Maps API key missing"}, status=500)
+
+    from .utils.distance import optimal_route
+    result = optimal_route(place_ids, settings.GOOGLE_MAPS_API_KEY)
+
+    # If a user is logged in, persist the trip
+    uid = request.session.get("simple_user_id")
+    if uid:
+        try:
+            user = SimpleUser.objects.get(pk=uid)
+            UserRoute.objects.create(
+                user=user,
+                input_ids=place_ids,
+                route_ids=result["route_ids"],
+                route_names=result["route_names"],
+                distance_meters=result["distance_meters"],
+            )
+        except SimpleUser.DoesNotExist:
+            pass  # ignore if session is stale
+
+    return JsonResponse(result)
+
+def user_info(request: HttpRequest):
+    uid = request.session.get("simple_user_id")
+    if not uid:
+        return HttpResponseRedirect(reverse("login"))
+    user = SimpleUser.objects.get(pk=uid)
+    trips = UserRoute.objects.filter(user=user).order_by("-created_at")
+    return render(request, "user_info.html", {
+        "current_username": user.userName,
+        "trips": trips,
+    })
 
 # URL: /location/{id}
 # View that responds to GET requests for information about a location
