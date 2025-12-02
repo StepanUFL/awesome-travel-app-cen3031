@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from .models import Route, SimpleUser, UserRoute
 from django.conf import settings
 from .utils.distance import optimal_route
+from django.db.models import Prefetch
 
 
 # View for the index page
@@ -41,12 +42,23 @@ def login(request: HttpRequest):
 
     return render(request, "login.html")
 
-
+# revisit
 def admin_users(request: HttpRequest):
-    # Only allow the special admin session
     if not request.session.get("is_admin"):
         return HttpResponseRedirect(reverse("login"))
-    users = SimpleUser.objects.all().order_by("userName")
+
+    # Order trips newest first; prefetch into 'trips' to avoid N+1 queries
+    trips_qs = UserRoute.objects.only(
+        "user_id", "route_names", "distance_meters", "created_at"
+    ).order_by("-created_at")
+
+    users = (
+        SimpleUser.objects
+        .all()
+        .order_by("userName")
+        .prefetch_related(Prefetch("userroute_set", queryset=trips_qs, to_attr="trips"))
+    )
+
     current_username = request.session.get("simple_user_name")
     return render(request, "admin_users.html", {"users": users, "current_username": current_username})
 
