@@ -59,6 +59,34 @@ window.initMap = function() {
 
 }
 
+const optimizeUrl = "/optimize-route/";
+
+function optimizeCurrentRoute() {
+  if (currentIDs.length < 2) {
+    document.getElementById("optimal-route").innerText = "Add at least two places to optimize.";
+    return;
+  }
+  fetch(optimizeUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify({ place_ids: currentIDs }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.error) { alert(data.error); return; }
+      document.getElementById("optimal-route").innerText =
+        `${data.route_names.join(" -> ")} (total: ${Math.round(data.distance_meters / 1000)} km)`;
+      currentIDs = data.route_ids;  // reflect optimized order
+      renderList();
+    })
+    .catch((err) => { console.error(err); alert("Failed to optimize route"); });
+}
+
+// Hook the “Calculate shortest route!” button to the optimizer
+document.getElementById("saveListButton").addEventListener("click", optimizeCurrentRoute);
 
 
 // Initialize the search bar functionality
@@ -253,14 +281,7 @@ function displayPlaces(results, status) {
     );
 }
 
-// Dummy data that mimics an accessible list of many locations
-// TO-DO Make a function to call the Place API to get location data based on ID
-locations = [
-    { id: "abc1", name: "Place1" },
-    { id: "abc2", name: "Place2" },
-    { id: "abc3", name: "Place3" },
-    { id: "abc4", name: "Place4" }
-];
+
 
 currentIDs = [];
 saved = [];
@@ -317,7 +338,7 @@ function getLocations() {
 
 function renderList() {
     document.getElementById("test").innerHTML = currentIDs;
-    document.getElementById("test2").innerHTML = getLocations();
+
     document.getElementById("location_ids").value = currentIDs;
 }
 
@@ -339,9 +360,10 @@ function saveList(userid) {
 }
 
 function returnList() {
-    currentIDs = saved;
-    renderList();
-    return currentIDs;
+  currentIDs = saved;
+  renderList();
+  optimizeCurrentRoute(); // compute and show the optimal route
+  return currentIDs;
 }
 
 // UNUSED AS OF NOW
