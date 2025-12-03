@@ -3,12 +3,30 @@ html {
 }
 
 body {
-    font-family: monoscape;
+    font-family: monoscape, sans-serif;
     color: white;
     background-color: #282c34;
     height: 100%;
     margin: 0;
     overflow: hidden;
+}
+
+button, input:not(#search-bar, #username, #password) {
+  background-color: #1BDE7E;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 #debug {

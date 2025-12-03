@@ -7,10 +7,15 @@
 </head>
 <body>
     <div>
-        <h1 class="welcome-title">Welcome!</h1>
+        <div class="welcome-title">
+            <h1 class="welcome-title">Welcome!</h1>
+            <p>
+                Welcome to Dayplanner! In order to access the main page, please log in.
+            </p>
 
-        <input type="button" value="User Login" onclick="location.href='{% url 'login' %}'" />
-        <input type="button" value="Don't have an account?" onclick="location.href='{% url 'signin' %}'" />
+            <input type="button" value="User Login" onclick="location.href='{% url 'login' %}'" />
+            <input type="button" value="Don't have an account?" onclick="location.href='{% url 'signin' %}'" />
+        </div>
 
     </div>
 </body>
